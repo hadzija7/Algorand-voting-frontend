@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const Identicon = ({size, address, ...rest}) => (
     <div {...rest} style={{width: `${size}px`, height: `${size}px`}}>
-        <Jazzicon diameter={size} seed={parseInt(address.slice(2, 10), 16)}/>
+        <Jazzicon diameter={size} seed={parseInt(address.toString().slice(2, 10), 16)}/>
     </div>
 );
 

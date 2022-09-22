@@ -13,15 +13,21 @@ byte "vote"
 bnz main_l4
 err
 main_l4:
-int 1
-int 1
+txna ApplicationArgs 1
+byte "OPTION1"
 ==
 bnz main_l6
-int 0
-return
-main_l6:
+main_l5:
 int 1
 return
+main_l6:
+byte "COUNT1"
+byte "COUNT1"
+app_global_get
+int 1
++
+app_global_put
+b main_l5
 main_l7:
 txn Sender
 global CreatorAddress

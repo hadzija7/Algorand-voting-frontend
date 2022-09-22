@@ -4,7 +4,7 @@ import {Button, FloatingLabel, Form, Modal} from "react-bootstrap";
 import {stringToMicroAlgos} from "../../utils/conversions";
 
 const AddPoll = ({createPoll}) => {
-    const [name, setName] = useState("");
+    const [id, setId] = useState("");
     const [image, setImage] = useState("");
     const [description, setDescription] = useState("");
     const [option1, setOption1] = useState("");
@@ -13,8 +13,8 @@ const AddPoll = ({createPoll}) => {
 
 
     const isFormFilled = useCallback(() => {
-        return name && image && description && option1 && option2 && option3
-    }, [name, image, description, option1, option2, option3]);
+        return id && image && description && option1 && option2 && option3
+    }, [id, image, description, option1, option2, option3]);
 
     const [show, setShow] = useState(false);
 
@@ -45,7 +45,7 @@ const AddPoll = ({createPoll}) => {
                             <Form.Control
                                 type="text"
                                 onChange={(e) => {
-                                    setName(e.target.value);
+                                    setId(e.target.value);
                                 }}
                                 placeholder="Enter name of product"
                             />
@@ -131,7 +131,7 @@ const AddPoll = ({createPoll}) => {
                         disabled={!isFormFilled()}
                         onClick={() => {
                             createPoll({
-                                name,
+                                id,
                                 image,
                                 description,
                                 option1,

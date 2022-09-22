@@ -4,7 +4,7 @@ import AddPoll from "./AddPoll";
 import Poll from "./Poll";
 import Loader from "../utils/Loader";
 import {NotificationError, NotificationSuccess} from "../utils/Notifications";
-import {createPollAction, deletePollAction, getPollsAction,} from "../../utils/voting";
+import {createPollAction, deletePollAction, getPollsAction, voteAction} from "../../utils/voting";
 import PropTypes from "prop-types";
 import {Row} from "react-bootstrap";
 
@@ -17,6 +17,7 @@ const Polls = ({address, fetchBalance}) => {
         getPollsAction()
             .then(polls => {
                 if (polls) {
+                    console.log("Pollllllls: ", polls)
                     setPolls(polls);
                 }
             })
@@ -62,6 +63,21 @@ const Polls = ({address, fetchBalance}) => {
             })
     };
 
+    const vote = async (poll, option) => {
+        setLoading(true);
+        voteAction(address, poll, option)
+        .then(() => {
+            toast(<NotificationSuccess text="Voted successfully"/>);
+            getPolls();
+            fetchBalance(address);
+        })
+        .catch(error => {
+            console.log(error)
+            toast(<NotificationError text="Failed to vote."/>);
+            setLoading(false);
+        })
+    }
+
     if (loading) {
 	    return <Loader/>;
 	}
@@ -77,6 +93,7 @@ const Polls = ({address, fetchBalance}) => {
 	                    <Poll
 	                        address={address}
 	                        poll={poll}
+                            vote={vote}
 	                        deletePoll={deletePoll}
 	                        key={index}
 	                    />

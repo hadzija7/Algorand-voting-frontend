@@ -16,15 +16,18 @@ import clearProgram from "!!raw-loader!../contracts/voting_clear.teal";
 import {base64ToUTF8String, utf8ToBase64String} from "./conversions";
 
 class Poll {
-    constructor(name, image, description, option1, option2, option3, appId, owner) {
-        this.name = name;
+    constructor(id, image, description, option1, option2, option3, count1, count2, count3, owner, appId) {
+        this.id = id;
         this.image = image;
         this.description = description;
         this.option1 = option1;
         this.option2 = option2;
         this.option3 = option3;
-        this.appId = appId;
+        this.count1 = count1;
+        this.count2 = count2;
+        this.count3 = count3;
         this.owner = owner;
+        this.appId = appId;
     }
 }
 
@@ -50,14 +53,14 @@ export const createPollAction = async (senderAddress, poll) => {
 
     // Build note to identify transaction later and required app args as Uint8Arrays
     let note = new TextEncoder().encode(votingNote);
-    let name = new TextEncoder().encode(poll.name);
+    let id = new TextEncoder().encode(poll.id);
     let image = new TextEncoder().encode(poll.image);
     let description = new TextEncoder().encode(poll.description);
     let option1 = new TextEncoder().encode(poll.option1);
     let option2 = new TextEncoder().encode(poll.option2);
     let option3 = new TextEncoder().encode(poll.option3);
 
-    let appArgs = [name, image, description, option1, option2, option3]
+    let appArgs = [id, image, description, option1, option2, option3]
 
     // Create ApplicationCreateTxn
     let txn = algosdk.makeApplicationCreateTxnFromObject({
@@ -106,6 +109,7 @@ export const voteAction = async (senderAddress, poll, option) => {
     let voteArg = new TextEncoder().encode("vote")
     let optionArg = new TextEncoder().encode(option);
     let appArgs = [voteArg, optionArg]
+    console.log("Option: ", option)
 
     let appCallTxn = algosdk.makeApplicationCallTxnFromObject({
         from: senderAddress,
@@ -115,43 +119,10 @@ export const voteAction = async (senderAddress, poll, option) => {
         appArgs: appArgs
     })
 
-    let signedTxn = await myAlgoConnect.signTransaction(appCallTxn)
-    let tx = await algodClient.sendRawTransaction(signedTxn).do()
+    let signedTxn = await myAlgoConnect.signTransaction(appCallTxn.toByte())
+    let tx = await algodClient.sendRawTransaction(signedTxn.blob).do()
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
     console.log("Voting transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
-
-    //// Create ApplicationCallTxn
-    // let appCallTxn = algosdk.makeApplicationCallTxnFromObject({
-    //     from: senderAddress,
-    //     appIndex: poll.appId,
-    //     onComplete: algosdk.OnApplicationComplete.NoOpOC,
-    //     suggestedParams: params,
-    //     appArgs: appArgs
-    // })
-
-    // // Create PaymentTxn
-    // let paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-    //     from: senderAddress,
-    //     to: poll.owner,
-    //     amount: product.price * count,
-    //     suggestedParams: params
-    // })
-
-    // let txnArray = [appCallTxn, paymentTxn]
-
-    // // Create group transaction out of previously build transactions
-    // let groupID = algosdk.computeGroupID(txnArray)
-    // for (let i = 0; i < 2; i++) txnArray[i].group = groupID;
-
-    // // Sign & submit the group transaction
-    // let signedTxn = await myAlgoConnect.signTransaction(txnArray.map(txn => txn.toByte()));
-    // let tx = await algodClient.sendRawTransaction(signedTxn.map(txn => txn.blob)).do();
-    
-    // // Wait for group transaction to be confirmed
-    // let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
-    
-    // // Notify about completion
-    // console.log("Group transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
 }
 
 export const deletePollAction = async (senderAddress, index) => {
@@ -223,12 +194,15 @@ const getApplication = async (appId) => {
 
         // 2. Parse fields of response and return product
         let owner = response.application.params.creator
-        let name = ""
+        let id = ""
         let image = ""
         let description = ""
         let option1 = ""
         let option2 = ""
         let option3 = ""
+        let count1 = 0
+        let count2 = 0
+        let count3 = 0
 
         const getField = (fieldName, globalState) => {
             return globalState.find(state => {
@@ -236,9 +210,9 @@ const getApplication = async (appId) => {
             })
         }
 
-        if (getField("NAME", globalState) !== undefined) {
-            let field = getField("NAME", globalState).value.bytes
-            name = base64ToUTF8String(field)
+        if (getField("ID", globalState) !== undefined) {
+            let field = getField("ID", globalState).value.bytes
+            id = base64ToUTF8String(field)
         }
 
         if (getField("IMAGE", globalState) !== undefined) {
@@ -252,18 +226,33 @@ const getApplication = async (appId) => {
         }
 
         if (getField("OPTION1", globalState) !== undefined) {
-            option1 = getField("OPTION1", globalState).value.uint
+            let field = getField("OPTION1", globalState).value.bytes
+            option1 = base64ToUTF8String(field)
         }
 
         if (getField("OPTION2", globalState) !== undefined) {
-            option2 = getField("OPTION2", globalState).value.uint
+            let field = getField("OPTION2", globalState).value.bytes
+            option2 = base64ToUTF8String(field)
         }
 
         if (getField("OPTION3", globalState) !== undefined) {
-            option3 = getField("OPTION3", globalState).value.uint
+            let field = getField("OPTION3", globalState).value.bytes
+            option3 = base64ToUTF8String(field)
         }
 
-        return new Poll(name, image, description, option1, option2, option3, appId, owner)
+        if (getField("COUNT1", globalState) !== undefined) {
+            count1 = getField("COUNT1", globalState).value.uint
+        }
+
+        if (getField("COUNT2", globalState) !== undefined) {
+            count2 = getField("COUNT2", globalState).value.uint
+        }
+
+        if (getField("COUNT3", globalState) !== undefined) {
+            count3 = getField("COUNT3", globalState).value.uint
+        }
+
+        return new Poll(id, image, description, option1, option2, option3, count1, count2, count3, owner, appId)
     } catch (err) {
         return null;
     }
