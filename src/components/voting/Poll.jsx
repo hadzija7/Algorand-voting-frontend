@@ -4,8 +4,8 @@ import {Badge, Button, Card, Col, FloatingLabel, Form, Stack} from "react-bootst
 import {microAlgosToString, truncateAddress} from "../../utils/conversions";
 import Identicon from "../utils/Identicon";
 
-const Poll = ({address, poll, vote, optIn, deletePoll}) => {
-    const {id, image, description, option1, option2, option3, count1, count2, count3, owner, appId} =
+const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll}) => {
+    const {id, image, description, option1, option2, option3, count1, count2, count3, voting_start, voting_end, winner, owner, appId} =
         poll;
 
     const [selectedOption, setSelectedOption] = useState("")
@@ -50,6 +50,20 @@ const Poll = ({address, poll, vote, optIn, deletePoll}) => {
                             >
                                 Vote
                             </Button>
+                        </div>
+                        <div>
+                            <Button onClick={() => declareWinner(address, poll)}>
+                                Declare winner
+                            </Button>
+                            Winner: {winner}
+                        </div>
+                        <div>
+                            <div>
+                                Voting start: {voting_start}
+                            </div>
+                            <div>
+                                Voting end: {voting_end}
+                            </div>
                         </div>
                         <div>
                             {poll.owner === address &&

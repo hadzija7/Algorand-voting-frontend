@@ -4,7 +4,7 @@ import AddPoll from "./AddPoll";
 import Poll from "./Poll";
 import Loader from "../utils/Loader";
 import {NotificationError, NotificationSuccess} from "../utils/Notifications";
-import {createPollAction, deletePollAction, getPollsAction, voteAction, optInAction} from "../../utils/voting";
+import {createPollAction, deletePollAction, getPollsAction, voteAction, optInAction, declareWinnerAction} from "../../utils/voting";
 import PropTypes from "prop-types";
 import {Row} from "react-bootstrap";
 
@@ -93,6 +93,21 @@ const Polls = ({address, fetchBalance}) => {
         })
     }
 
+    const declareWinner = async (address, poll) => {
+        setLoading(true);
+        declareWinnerAction(address, poll)
+        .then(() => {
+            toast(<NotificationSuccess text="Successfully ended action"/>);
+            getPolls();
+            fetchBalance(address);
+        })
+        .catch(error => {
+            console.log(error)
+            toast(<NotificationError text="Failed to declare a winner."/>);
+            setLoading(false);
+        })
+    }
+
     if (loading) {
 	    return <Loader/>;
 	}
@@ -110,6 +125,7 @@ const Polls = ({address, fetchBalance}) => {
 	                        poll={poll}
                             vote={vote}
                             optIn={optIn}
+                            declareWinner={declareWinner}
 	                        deletePoll={deletePoll}
 	                        key={index}
 	                    />

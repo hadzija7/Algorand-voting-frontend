@@ -16,7 +16,7 @@ import clearProgram from "!!raw-loader!../contracts/voting_clear.teal";
 import {base64ToUTF8String, utf8ToBase64String} from "./conversions";
 
 class Poll {
-    constructor(id, image, description, option1, option2, option3, count1, count2, count3, owner, appId) {
+    constructor(id, image, description, option1, option2, option3, count1, count2, count3, voting_start, voting_end, winner, owner, appId) {
         this.id = id;
         this.image = image;
         this.description = description;
@@ -26,6 +26,9 @@ class Poll {
         this.count1 = count1;
         this.count2 = count2;
         this.count3 = count3;
+        this.voting_start = voting_start;
+        this.voting_end = voting_end;
+        this.winner = winner;
         this.owner = owner;
         this.appId = appId;
     }
@@ -59,8 +62,9 @@ export const createPollAction = async (senderAddress, poll) => {
     let option1 = new TextEncoder().encode(poll.option1);
     let option2 = new TextEncoder().encode(poll.option2);
     let option3 = new TextEncoder().encode(poll.option3);
+    let voting_duration = algosdk.encodeUint64(poll.voting_end);
 
-    let appArgs = [id, image, description, option1, option2, option3]
+    let appArgs = [id, image, description, option1, option2, option3, voting_duration]
 
     // Create ApplicationCreateTxn
     let txn = algosdk.makeApplicationCreateTxnFromObject({
@@ -113,6 +117,30 @@ export const optInAction = async (senderAddress, poll) => {
     })
 
     let signedTxn = await myAlgoConnect.signTransaction(optinTxn.toByte())
+    let tx = await algodClient.sendRawTransaction(signedTxn.blob).do()
+    let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
+    console.log("Voting transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+}
+
+export const declareWinnerAction = async (senderAddress, poll) => {
+    console.log("Declaring the winner...")
+
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = algosdk.ALGORAND_MIN_TX_FEE;
+    params.flatFee = true;
+
+    let voteArg = new TextEncoder().encode("declare_winner")
+    let appArgs = [voteArg]
+
+    let appCallTxn = algosdk.makeApplicationCallTxnFromObject({
+        from: senderAddress,
+        appIndex: poll.appId,
+        onComplete: algosdk.OnApplicationComplete.NoOpOC,
+        suggestedParams: params,
+        appArgs: appArgs
+    })
+
+    let signedTxn = await myAlgoConnect.signTransaction(appCallTxn.toByte())
     let tx = await algodClient.sendRawTransaction(signedTxn.blob).do()
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
     console.log("Voting transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
@@ -220,6 +248,9 @@ const getApplication = async (appId) => {
         let option1 = ""
         let option2 = ""
         let option3 = ""
+        let winner = ""
+        let voting_start = 0
+        let voting_end = 0
         let count1 = 0
         let count2 = 0
         let count3 = 0
@@ -260,6 +291,19 @@ const getApplication = async (appId) => {
             option3 = base64ToUTF8String(field)
         }
 
+        if (getField("WINNER", globalState) !== undefined) {
+            let field = getField("WINNER", globalState).value.bytes
+            winner = base64ToUTF8String(field)
+        }
+
+        if (getField("START", globalState) !== undefined) {
+            voting_start = getField("START", globalState).value.uint
+        }
+
+        if (getField("END", globalState) !== undefined) {
+            voting_end = getField("END", globalState).value.uint
+        }
+
         if (getField("COUNT1", globalState) !== undefined) {
             count1 = getField("COUNT1", globalState).value.uint
         }
@@ -272,7 +316,7 @@ const getApplication = async (appId) => {
             count3 = getField("COUNT3", globalState).value.uint
         }
 
-        return new Poll(id, image, description, option1, option2, option3, count1, count2, count3, owner, appId)
+        return new Poll(id, image, description, option1, option2, option3, count1, count2, count3, voting_start, voting_end, winner, owner, appId)
     } catch (err) {
         return null;
     }

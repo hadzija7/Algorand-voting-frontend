@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from "react";
 import PropTypes from "prop-types";
 import {Button, FloatingLabel, Form, Modal} from "react-bootstrap";
-import {stringToMicroAlgos} from "../../utils/conversions";
+import {stringToMicroAlgos, stringToNumber} from "../../utils/conversions";
 
 const AddPoll = ({createPoll}) => {
     const [id, setId] = useState("");
@@ -10,11 +10,12 @@ const AddPoll = ({createPoll}) => {
     const [option1, setOption1] = useState("");
     const [option2, setOption2] = useState("");
     const [option3, setOption3] = useState("");
+    const [voting_end, setVotingEnd] = useState(0); //voting duration
 
 
     const isFormFilled = useCallback(() => {
-        return id && image && description && option1 && option2 && option3
-    }, [id, image, description, option1, option2, option3]);
+        return id && image && description && option1 && option2 && option3 && voting_end
+    }, [id, image, description, option1, option2, option3, voting_end]);
 
     const [show, setShow] = useState(false);
 
@@ -120,6 +121,20 @@ const AddPoll = ({createPoll}) => {
                                 }}
                             />
                         </FloatingLabel>
+                        <FloatingLabel
+                            controlId="inputDescription"
+                            label="Voting duration in seconds"
+                            className="mb-3"
+                        >
+                            <Form.Control
+                                type="text"
+                                placeholder="0"
+                                style={{ height: "80px" }}
+                                onChange={(e) => {
+                                    setVotingEnd(stringToNumber(e.target.value));
+                                }}
+                            />
+                        </FloatingLabel>
                     </Modal.Body>
                 </Form>
                 <Modal.Footer>
@@ -137,6 +152,7 @@ const AddPoll = ({createPoll}) => {
                                 option1,
                                 option2,
                                 option3,
+                                voting_end,
                             });
                             handleClose();
                         }}
