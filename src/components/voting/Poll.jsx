@@ -4,7 +4,7 @@ import {Badge, Button, Card, Col, FloatingLabel, Form, Stack} from "react-bootst
 import {microAlgosToString, truncateAddress} from "../../utils/conversions";
 import Identicon from "../utils/Identicon";
 
-const Poll = ({address, poll, vote, deletePoll}) => {
+const Poll = ({address, poll, vote, optIn, deletePoll}) => {
     const {id, image, description, option1, option2, option3, count1, count2, count3, owner, appId} =
         poll;
 
@@ -38,6 +38,11 @@ const Poll = ({address, poll, vote, deletePoll}) => {
                             <input type="radio" value={option1} /> {option1} ({count1})
                             <input type="radio" value={option2} /> {option2} ({count2})
                             <input type="radio" value={option3} /> {option3} ({count3})
+                        </div>
+                        <div>
+                            <Button onClick={() => optIn(address, poll)}>
+                                OptIn
+                            </Button>
                         </div>
                         <div>
                             <Button

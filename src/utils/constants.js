@@ -23,7 +23,7 @@ export const minRound = 21540981;
 export const votingNote = "voting-system:uv1"
 
 // Maximum local storage allocation, immutable
-export const numLocalInts = 0;
+export const numLocalInts = 1;
 export const numLocalBytes = 0;
 // Maximum global storage allocation, immutable
 export const numGlobalInts = 3; // Global variables stored as Int: count, sold

@@ -108,7 +108,7 @@ const AddPoll = ({createPoll}) => {
                         </FloatingLabel>
                         <FloatingLabel
                             controlId="inputDescription"
-                            label="Option2"
+                            label="Option3"
                             className="mb-3"
                         >
                             <Form.Control

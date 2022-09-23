@@ -4,7 +4,7 @@ import AddPoll from "./AddPoll";
 import Poll from "./Poll";
 import Loader from "../utils/Loader";
 import {NotificationError, NotificationSuccess} from "../utils/Notifications";
-import {createPollAction, deletePollAction, getPollsAction, voteAction} from "../../utils/voting";
+import {createPollAction, deletePollAction, getPollsAction, voteAction, optInAction} from "../../utils/voting";
 import PropTypes from "prop-types";
 import {Row} from "react-bootstrap";
 
@@ -78,6 +78,21 @@ const Polls = ({address, fetchBalance}) => {
         })
     }
 
+    const optIn = async (address, poll) => {
+        setLoading(true);
+        optInAction(address, poll)
+        .then(() => {
+            toast(<NotificationSuccess text="Opted in successfully"/>);
+            getPolls();
+            fetchBalance(address);
+        })
+        .catch(error => {
+            console.log(error)
+            toast(<NotificationError text="Failed to optIn."/>);
+            setLoading(false);
+        })
+    }
+
     if (loading) {
 	    return <Loader/>;
 	}
@@ -94,6 +109,7 @@ const Polls = ({address, fetchBalance}) => {
 	                        address={address}
 	                        poll={poll}
                             vote={vote}
+                            optIn={optIn}
 	                        deletePoll={deletePoll}
 	                        key={index}
 	                    />

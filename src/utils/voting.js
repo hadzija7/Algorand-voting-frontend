@@ -98,6 +98,26 @@ export const createPollAction = async (senderAddress, poll) => {
     return appId;
 }
 
+export const optInAction = async (senderAddress, poll) => {
+    console.log("Opting in...")
+
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = algosdk.ALGORAND_MIN_TX_FEE;
+    params.flatFee = true;
+
+    let optinTxn = algosdk.makeApplicationOptInTxnFromObject({
+        from: senderAddress,
+        appIndex: poll.appId,
+        onComplete: algosdk.OnApplicationComplete.NoOpOC,
+        suggestedParams: params,
+    })
+
+    let signedTxn = await myAlgoConnect.signTransaction(optinTxn.toByte())
+    let tx = await algodClient.sendRawTransaction(signedTxn.blob).do()
+    let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
+    console.log("Voting transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+}
+
 export const voteAction = async (senderAddress, poll, option) => {
     console.log("Voting...");
 
