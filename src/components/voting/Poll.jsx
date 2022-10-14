@@ -5,8 +5,6 @@ import {microAlgosToString, truncateAddress} from "../../utils/conversions";
 import Identicon from "../utils/Identicon";
 import {isOptedInAction} from "../../utils/voting";
 
-
-
 const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll, isOptedIn}) => {
     const {id, image, description, option1, option2, option3, count1, count2, count3, voting_start, voting_end, winner, owner, appId} =
         poll;
@@ -39,78 +37,6 @@ const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll, isOptedIn}
         return res
     }
 
-    // const renderOptInButton = () => {
-    //     isOptedInAction(address, appId).then(
-    //         opted => {
-    //             let res
-    //             console.log("Opted result: ", opted)
-    //             // let opted = false
-    //             if(!opted){
-    //                 res = <Button onClick={() => optIn(address, poll)}>
-    //                     OptIn
-    //                 </Button>
-    //             }else{
-    //                 res = <Button disabled>
-    //                     Opted in
-    //                 </Button>
-    //             }
-    //             return res
-    //         }
-    //     )
-    // }
-
-    // const RenderOptInButton = async () => {
-    //     // I'm guessing this is a regular promise that returns a boolen
-    //     const opted = await isOptedInAction(address, appId)
-    //     console.log("Opted result: ", opted)
-    
-    //     // let opted = false
-    //     if (!opted) {
-    //         return <Button onClick={() => optIn(address, poll)}>OptIn</Button>
-    //     } else {
-    //         return <Button disabled>Opted in</Button>
-    //     }
-    // }
-
-    // const RenderOptInButton = () => {
-    //     // I'm guessing this is a regular promise that returns a boolen
-    //     let opted = false
-    //     isOptedInAction(address, appId).then((optedIn) => {
-    //         opted = optedIn
-    //     })
-    //     console.log("Opted result: ", opted)
-    
-    //     // let opted = false
-    //     if (!opted) {
-    //         return (
-    //             <Button onClick={() => optIn(address, poll)}>OptIn</Button>
-    //         )
-    //     } else {
-    //         return (
-    //             <Button disabled>Opted in</Button>
-    //         )
-    //     }
-    // }
-
-    // const RenderOptInButton = () => {
-    //     const response = isOptedInAction(address, appId).then((opted) => {
-    //         console.log("Opted result: ", opted)
-    
-    //         // let opted = false
-    //         if (!opted) {
-    //             return (
-    //                 <Button onClick={() => optIn(address, poll)}>OptIn</Button>
-    //             )
-    //         } else {
-    //             return (
-    //                 <Button disabled>Opted in</Button>
-    //             )
-    //         }
-    //     })
-    
-    //     return response
-    // }
-
     return (
         <Col key={id}>
             <Card className="h-100">
@@ -137,11 +63,7 @@ const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll, isOptedIn}
                             <input type="radio" value={option3} /> {option3} ({count3})
                         </div>
                         <div>
-                        {/* <RenderOptInButton /> */}
                             {RenderOptInButton()}
-                            {/* <Button onClick={() => optIn(address, poll)}>
-                                OptIn
-                            </Button> */}
                         </div>
                         <div>
                             <Button
@@ -151,9 +73,11 @@ const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll, isOptedIn}
                             </Button>
                         </div>
                         <div>
-                            <Button onClick={() => declareWinner(address, poll)}>
-                                Declare winner
-                            </Button>
+                            { address==owner &&
+                                <Button onClick={() => declareWinner(address, poll)}>
+                                    Declare winner
+                                </Button>
+                            }
                             Winner: {winner}
                         </div>
                         <div>
