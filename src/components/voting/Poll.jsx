@@ -37,6 +37,39 @@ const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll, isOptedIn}
         return res
     }
 
+    const RenderVoteButton = () => {
+        let res
+        // let opted = false
+        if(!optedVar){
+            res = <Button disabled>
+                    Vote
+                </Button>
+        }else{
+            res = <Button
+                    onClick={() => vote(poll, selectedOption)}
+                >
+                    Vote
+                </Button>
+        }
+        return res
+    }
+
+    const RenderTime = () => {
+        let startTime = new Date(voting_start * 1000)
+        let endTime = new Date(voting_end * 1000)
+
+        return (
+            <div>
+                <div>
+                    Voting start: {startTime.toLocaleTimeString("default")} h
+                </div>
+                <div>
+                    Voting end: {endTime.toLocaleTimeString("default")} h
+                </div>
+            </div>
+        )
+    }
+
     return (
         <Col key={id}>
             <Card className="h-100">
@@ -66,11 +99,7 @@ const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll, isOptedIn}
                             {RenderOptInButton()}
                         </div>
                         <div>
-                            <Button
-                                onClick={() => vote(poll, selectedOption)}
-                            >
-                                Vote
-                            </Button>
+                            {RenderVoteButton()}
                         </div>
                         <div>
                             { address==owner &&
@@ -81,12 +110,7 @@ const Poll = ({address, poll, vote, optIn, declareWinner, deletePoll, isOptedIn}
                             Winner: {winner}
                         </div>
                         <div>
-                            <div>
-                                Voting start: {voting_start}
-                            </div>
-                            <div>
-                                Voting end: {voting_end}
-                            </div>
+                            {RenderTime()}
                         </div>
                         <div>
                             {poll.owner === address &&
