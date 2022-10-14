@@ -4,7 +4,7 @@ import AddPoll from "./AddPoll";
 import Poll from "./Poll";
 import Loader from "../utils/Loader";
 import {NotificationError, NotificationSuccess} from "../utils/Notifications";
-import {createPollAction, deletePollAction, getPollsAction, voteAction, optInAction, declareWinnerAction} from "../../utils/voting";
+import {createPollAction, deletePollAction, getPollsAction, voteAction, optInAction, declareWinnerAction, isOptedInAction} from "../../utils/voting";
 import PropTypes from "prop-types";
 import {Row} from "react-bootstrap";
 
@@ -108,6 +108,19 @@ const Polls = ({address, fetchBalance}) => {
         })
     }
 
+    const isOptedIn = (address, appId) => {
+        // e.preventDefault();
+        // setLoading(true);
+        isOptedInAction(address, appId)
+        .then((res) => {
+            return res
+        })
+        .catch(error => {
+            console.log(error)
+            return error
+        })
+    }
+
     if (loading) {
 	    return <Loader/>;
 	}
@@ -116,6 +129,7 @@ const Polls = ({address, fetchBalance}) => {
 	        <div className="d-flex justify-content-between align-items-center mb-4">
 	            <h1 className="fs-4 fw-bold mb-0">Algo voting</h1>
 	            <AddPoll createPoll={createPoll}/>
+                {/* <button onClick={(e) => isOptedIn(e, address, 112529866)}>Is opted in?</button> */}
 	        </div>
 	        <Row xs={1} sm={2} lg={3} className="g-3 mb-5 g-xl-4 g-xxl-5">
 	            <>
@@ -127,6 +141,7 @@ const Polls = ({address, fetchBalance}) => {
                             optIn={optIn}
                             declareWinner={declareWinner}
 	                        deletePoll={deletePoll}
+                            isOptedIn={isOptedIn}
 	                        key={index}
 	                    />
 	                ))}

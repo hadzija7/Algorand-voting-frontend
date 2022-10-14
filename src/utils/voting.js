@@ -231,6 +231,19 @@ export const getPollsAction = async () => {
     return polls
 }
 
+export const isOptedInAction = async (address, appId) => {
+    const accountLocalState = await indexerClient.lookupAccountAppLocalStates(address).do()
+    console.log(accountLocalState["apps-local-states"])
+    const appIds = accountLocalState["apps-local-states"]
+    for(let i = 0; i < appIds.length; i ++){
+        if(appIds[i].id == appId){
+            console.log("User is opted in into this app")
+            return true
+        }
+    }
+    return false
+}
+
 const getApplication = async (appId) => {
     try {
         // 1. Get application by appId
