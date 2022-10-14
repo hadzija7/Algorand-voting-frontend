@@ -1,27 +1,27 @@
 {
   "files": {
     "main.css": "/Algorand-voting-frontend/static/css/main.d87cbb72.chunk.css",
-    "main.js": "/Algorand-voting-frontend/static/js/main.39296f6e.chunk.js",
-    "main.js.map": "/Algorand-voting-frontend/static/js/main.39296f6e.chunk.js.map",
+    "main.js": "/Algorand-voting-frontend/static/js/main.a41ef3a6.chunk.js",
+    "main.js.map": "/Algorand-voting-frontend/static/js/main.a41ef3a6.chunk.js.map",
     "runtime-main.js": "/Algorand-voting-frontend/static/js/runtime-main.16467dc4.js",
     "runtime-main.js.map": "/Algorand-voting-frontend/static/js/runtime-main.16467dc4.js.map",
     "static/css/2.ef2dbef7.chunk.css": "/Algorand-voting-frontend/static/css/2.ef2dbef7.chunk.css",
-    "static/js/2.fbbf57a9.chunk.js": "/Algorand-voting-frontend/static/js/2.fbbf57a9.chunk.js",
-    "static/js/2.fbbf57a9.chunk.js.map": "/Algorand-voting-frontend/static/js/2.fbbf57a9.chunk.js.map",
+    "static/js/2.8455d300.chunk.js": "/Algorand-voting-frontend/static/js/2.8455d300.chunk.js",
+    "static/js/2.8455d300.chunk.js.map": "/Algorand-voting-frontend/static/js/2.8455d300.chunk.js.map",
     "static/js/3.2d25f2cb.chunk.js": "/Algorand-voting-frontend/static/js/3.2d25f2cb.chunk.js",
     "static/js/3.2d25f2cb.chunk.js.map": "/Algorand-voting-frontend/static/js/3.2d25f2cb.chunk.js.map",
     "index.html": "/Algorand-voting-frontend/index.html",
     "static/css/2.ef2dbef7.chunk.css.map": "/Algorand-voting-frontend/static/css/2.ef2dbef7.chunk.css.map",
     "static/css/main.d87cbb72.chunk.css.map": "/Algorand-voting-frontend/static/css/main.d87cbb72.chunk.css.map",
-    "static/js/2.fbbf57a9.chunk.js.LICENSE.txt": "/Algorand-voting-frontend/static/js/2.fbbf57a9.chunk.js.LICENSE.txt",
+    "static/js/2.8455d300.chunk.js.LICENSE.txt": "/Algorand-voting-frontend/static/js/2.8455d300.chunk.js.LICENSE.txt",
     "static/media/bootstrap-icons.css": "/Algorand-voting-frontend/static/media/bootstrap-icons.ea98e12d.woff2",
     "static/media/voting.f1bc2b5c.jpg": "/Algorand-voting-frontend/static/media/voting.f1bc2b5c.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.16467dc4.js",
     "static/css/2.ef2dbef7.chunk.css",
-    "static/js/2.fbbf57a9.chunk.js",
+    "static/js/2.8455d300.chunk.js",
     "static/css/main.d87cbb72.chunk.css",
-    "static/js/main.39296f6e.chunk.js"
+    "static/js/main.a41ef3a6.chunk.js"
   ]
 }
