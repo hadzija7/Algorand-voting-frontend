@@ -44,7 +44,7 @@ const compileProgram = async (programSource) => {
 
 // CREATE PRODUCT: ApplicationCreateTxn
 export const createPollAction = async (senderAddress, poll) => {
-    console.log("Adding poll...")
+    
 
     let params = await algodClient.getTransactionParams().do();
     params.fee = algosdk.ALGORAND_MIN_TX_FEE;
@@ -86,24 +86,22 @@ export const createPollAction = async (senderAddress, poll) => {
 
     // Sign & submit the transaction
     let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
-    console.log("Signed transaction with txID: %s", txId);
+    
     await algodClient.sendRawTransaction(signedTxn.blob).do();
 
     // Wait for transaction to be confirmed
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
 
-    // Get the completed Transaction
-    console.log("Transaction " + txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
-
+   
     // Get created application id and notify about completion
     let transactionResponse = await algodClient.pendingTransactionInformation(txId).do();
     let appId = transactionResponse['application-index'];
-    console.log("Created new app-id: ", appId);
+    
     return appId;
 }
 
 export const optInAction = async (senderAddress, poll) => {
-    console.log("Opting in...")
+    
 
     let params = await algodClient.getTransactionParams().do();
     params.fee = algosdk.ALGORAND_MIN_TX_FEE;
@@ -119,11 +117,11 @@ export const optInAction = async (senderAddress, poll) => {
     let signedTxn = await myAlgoConnect.signTransaction(optinTxn.toByte())
     let tx = await algodClient.sendRawTransaction(signedTxn.blob).do()
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
-    console.log("Voting transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+    
 }
 
 export const declareWinnerAction = async (senderAddress, poll) => {
-    console.log("Declaring the winner...")
+    
 
     let params = await algodClient.getTransactionParams().do();
     params.fee = algosdk.ALGORAND_MIN_TX_FEE;
@@ -143,11 +141,11 @@ export const declareWinnerAction = async (senderAddress, poll) => {
     let signedTxn = await myAlgoConnect.signTransaction(appCallTxn.toByte())
     let tx = await algodClient.sendRawTransaction(signedTxn.blob).do()
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
-    console.log("Voting transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+    
 }
 
 export const voteAction = async (senderAddress, poll, option) => {
-    console.log("Voting...");
+    
 
     let params = await algodClient.getTransactionParams().do();
     params.fee = algosdk.ALGORAND_MIN_TX_FEE;
@@ -157,7 +155,7 @@ export const voteAction = async (senderAddress, poll, option) => {
     let voteArg = new TextEncoder().encode("vote")
     let optionArg = new TextEncoder().encode(option);
     let appArgs = [voteArg, optionArg]
-    console.log("Option: ", option)
+    
 
     let appCallTxn = algosdk.makeApplicationCallTxnFromObject({
         from: senderAddress,
@@ -170,11 +168,11 @@ export const voteAction = async (senderAddress, poll, option) => {
     let signedTxn = await myAlgoConnect.signTransaction(appCallTxn.toByte())
     let tx = await algodClient.sendRawTransaction(signedTxn.blob).do()
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
-    console.log("Voting transaction " + tx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+    
 }
 
 export const deletePollAction = async (senderAddress, index) => {
-    console.log("Deleting application...");
+    
 
     let params = await algodClient.getTransactionParams().do();
     params.fee = algosdk.ALGORAND_MIN_TX_FEE;
@@ -190,23 +188,22 @@ export const deletePollAction = async (senderAddress, index) => {
 
     // Sign & submit the transaction
     let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
-    console.log("Signed transaction with txID: %s", txId);
+    
     await algodClient.sendRawTransaction(signedTxn.blob).do();
 
     // Wait for transaction to be confirmed
     const confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
 
-    // Get the completed Transaction
-    console.log("Transaction " + txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+    
 
     // Get application id of deleted application and notify about completion
     let transactionResponse = await algodClient.pendingTransactionInformation(txId).do();
     let appId = transactionResponse['txn']['txn'].apid;
-    console.log("Deleted app-id: ", appId);
+    
 }
 
 export const getPollsAction = async () => {
-    console.log("Fetching polls...")
+    
     let note = new TextEncoder().encode(votingNote);
     let encodedNote = Buffer.from(note).toString("base64");
 
@@ -227,7 +224,7 @@ export const getPollsAction = async () => {
             }
         }
     }
-    console.log("Polls fetched.")
+    
     return polls
 }
 
@@ -237,7 +234,7 @@ export const isOptedInAction = async (address, appId) => {
     const appIds = accountLocalState["apps-local-states"]
     for(let i = 0; i < appIds.length; i ++){
         if(appIds[i].id == appId){
-            console.log("User is opted in into this app")
+            
             return true
         }
     }
